@@ -1,0 +1,45 @@
+<odoo>
+    <data>
+        <!--  View Form --> 
+        <record model="ir.ui.view" id="access_key_form_view">
+            <field name="name">Access Store form</field>
+            <field name="model">access.key</field>
+            <field name="arch" type="xml">
+              <form string="Store key access">
+                <sheet>
+                  <group>
+                    <field name="name" string="Name"/>
+                    <field name="key_data" string="Key data"/>
+                  </group>
+                </sheet>
+              </form>
+            </field>
+        </record>
+
+        <!--  View Tree -->
+        <record model="ir.ui.view" id="access_key_tree_view">
+          <field name="name">Access Store list</field>
+          <field name="model">access.key</field>
+          <field name="arch" type="xml">
+            <tree string="Key access">
+              <field name="name" string="Name"/>
+              <field name="key_data" string="Key data"/>
+            </tree> 
+          </field>
+        </record>
+
+      
+          <!-- actions -->
+          <record model="ir.actions.act_window" id="acess_key_list_action">
+            <field name="name">Access Key</field>
+            <field name="res_model">access.key</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">Create the first Key</p>
+            </field>
+          </record>
+      
+          <!-- Menus -->
+          <menuitem name="Access Estafeta Key" id="access_key_estafeta" parent="account.account_management_menu" action="acess_key_list_action"/>
+    </data>
+</odoo>

@@ -1,0 +1,57 @@
+<odoo>
+    <data>
+        <!--Cron to generate token-->
+        <record id="ir_cron_estafeta_token_get" model="ir.cron">
+            <field name="name">Estafeta Token Get</field>
+            <field name="model_id" ref="model_estafeta_token"/>
+            <field name="state">code</field>
+            <field name="code">model._get_token()</field>
+            <field name="interval_number">1</field> 
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field> 
+            <field name="active" eval="True"/>
+        </record>
+
+          <!--  View Form --> 
+        <record model="ir.ui.view" id="estafeta_token_form_view">
+          <field name="name">Estafeta Token form</field>
+          <field name="model">estafeta.token</field>
+          <field name="arch" type="xml">
+            <form string="Store Token">
+              <sheet>
+                <group>
+                  <field name="name" string="Token"/>
+                  <field name="create_date"/>
+                </group>
+              </sheet>
+            </form>
+          </field>
+        </record>
+
+          <!-- View Tree -->
+          <record model="ir.ui.view" id="estafeta_token_tree_view">
+            <field name="name">Token Token List</field>
+            <field name="model">estafeta.token</field>
+            <field name="arch" type="xml">
+              <tree string="Store Estafeta Token">   
+                    <field name="name" string="Token"/>
+                    <field name="create_date"/>
+              </tree>
+            </field>
+          </record>
+      
+          <!-- actions -->
+          <record model="ir.actions.act_window" id="estafeta_token_action_window">
+            <field name="name">Estafeta Token</field>
+            <field name="res_model">estafeta.token</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">Create the first Error</p>
+            </field>
+          </record>
+      
+          <!-- Menus -->
+          <menuitem name="Estafeta Token" id="estafeta_token_menu" parent="account.account_management_menu" action="estafeta_token_action_window"/>
+      
+    </data>
+</odoo>

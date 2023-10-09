@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+estafeta_delivery_user,estafeta_delivery_user,model_estafeta_delivery_wizard,base.group_user,1,1,1,0
+estafeta_delivery_manager,estafeta_delivery_manager,model_estafeta_delivery_wizard,group_manager,1,1,1,1
+estafeta_access_user,access_key,model_access_key,base.group_user,1,1,1,0
+estafeta_token_user,estafeta_token,model_estafeta_token,base.group_user,1,1,1,0

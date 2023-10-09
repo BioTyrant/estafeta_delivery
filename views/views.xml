@@ -1,0 +1,53 @@
+<odoo>
+  <data>
+    <!-- custom Invoice view -->
+
+    <record model="ir.ui.view" id="wizard_form_view"> 
+      <field name="name">wizard.form</field>
+      <field name="model">estafeta_delivery.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Generador de Guias">
+          <group>
+            <group string="Address" id="group_izq">
+              <field name="address_name"/>
+              <field name="address_last_name"/>
+              <field name="address_street"/>
+              <field name="address_province"/>
+              <field name="address_city"/>
+              <field name="address_post_code"/>
+              <field name="address_country"/>
+              <field name="address_telephone"/>
+            </group>
+            <group string="Data" id="group_izq">
+              <field name="invoice_id"/>
+              <field name="shipping_type"/>
+              <field name="sale_order_id"/>
+            </group>
+          </group>
+          <footer>
+            <button name="get_token" type="object" string="Generar Guia" class="oe_highlight"/> 
+            <button special="cancel" string="Cancelar"/>
+          </footer>
+        </form>
+      </field>
+    </record> 
+
+    <record model="ir.actions.act_window" id="action_estafeta_wizard">
+      <field name="name">Estafeta_Wizard</field>
+      <field name="res_model">estafeta_delivery.wizard</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+    <record model="ir.ui.view" id="estafeta_delivery">
+      <field name="name">estafeta_wizard</field>
+      <field name="model">account.move</field>
+      <field name="inherit_id" ref="account_edi.view_move_form_inherit"/>
+      <field name="arch" type="xml">
+        <xpath expr="//button[@name='button_draft']" position="after" class="oe_highlight">
+          <button type="action" name="%(estafeta_delivery.action_estafeta_wizard)d"  string="Generdor de Guias" id='action_wizard'/>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>
