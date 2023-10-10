@@ -25,7 +25,7 @@
             </group>
           </group>
           <footer>
-            <button name="get_token" type="object" string="Generar Guia" class="oe_highlight"/> 
+            <button name="update_invoice" type="object" string="Generar Guia" class="oe_highlight"/> 
             <button special="cancel" string="Cancelar"/>
           </footer>
         </form>
