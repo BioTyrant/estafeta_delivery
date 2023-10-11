@@ -17,6 +17,7 @@ class estafeta_delivery(models.TransientModel):
     
     @api.depends('address')
     def _address_name(self):
+
         for record in self:
             try:
                 if self.address:
@@ -149,24 +150,24 @@ class estafeta_delivery(models.TransientModel):
                             "deliveryPUDOCode": "567",
                             "homeAddress": {
                                 "contact": {
-                                    "corporateName": "Casa",
-                                    "contactName": self.address_name + " " + self.address_last_name,
-                                    "telephone": "5584026041",
-                                    "email": "manfredjuarez100@gmail.com"
+                                    "corporateName": self.address_name + " " + self.address_last_name[:29],
+                                    "contactName": self.address_name + " " + self.address_last_name[:29],
+                                    "telephone": self.address_telephone,
+                                    # "email": "manfredjuarez100@gmail.com"
                                 },
                                 "address": {
                                     "bUsedCode": True,
                                     "roadTypeCode": "001",
                                     "roadTypeAbbName": "string",
-                                    "roadName": "Bahia de san quintin",
-                                    "townshipCode": "31-124",
-                                    "townshipName": "string",
+                                    "roadName": self.address_street[:49],
+                                    "townshipCode": self.address_post_code,
+                                    # "townshipName": "string",
                                     "settlementTypeCode": "001",
                                     "settlementTypeAbbName": "string",
-                                    "settlementName": "Alan sosa",
+                                    "settlementName": self.address_province,
                                     "stateCode": "08",
-                                    "stateAbbName": "Chihuahua",
-                                    "zipCode": "31124",
+                                    "stateAbbName": self.address_city,
+                                    "zipCode": self.address_post_code,
                                     "countryCode": "484",
                                     "countryName": "MEX",
                                     "externalNum": "5201"
@@ -182,21 +183,39 @@ class estafeta_delivery(models.TransientModel):
 
             response = requests.post(url=endpoint, headers=headers, data=data_json)  # Envía data_json en lugar de data
 
-            # print("Código de respuesta:", response.status_code)
+            print("Código de respuesta:", response.status_code)
 
-            # if response.status_code == 201:
-            #     Imprime la respuesta del servidor si es necesario
-            #     print("Respuesta del servidor:", response.text)
-                    
+            if response.status_code == 201:
+                # Imprime la respuesta del servidor si es necesario
+                print("Respuesta del servidor:", response.text)
+            else:
+                print("Respuesta del servidor:", response.text)
+
+
             response_json = response.json()
             return response_json
 
+    
     def update_invoice(self):
         
         traking = self._tracking_estafeta()
         
         data = traking['data']
-        print(data)
+        weybill = traking['labelPetitionResult']['elements'][0]['wayBill']
+        attachment_data = {
+            'name': weybill,
+            'datas': data,
+            'res_model': 'account.move',  # Nombre del modelo actual
+            'res_id': self.invoice_id.id,  # ID del registro actual
+        }
+
+        invoice = self.env['account.move'].browse(self.invoice_id.id)
+        if invoice:
+            invoice.write({
+                'x_carrier_guide':weybill
+            })
+
+
         
              
 
