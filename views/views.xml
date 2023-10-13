@@ -17,6 +17,7 @@
               <field name="address_post_code"/>
               <field name="address_country"/>
               <field name="address_telephone"/>
+              <field name="address_externalNum"/>
             </group>
             <group string="Data" id="group_izq">
               <field name="invoice_id"/>
@@ -52,7 +53,7 @@
     <record model="ir.ui.view" id="account_move_form_custom">
       <field name="name">Account Move Custom</field>
       <field name="model">account.move</field>
-      <field name="inherit_id" ref="studio_customization.odoo_studio_account__3b29c629-0ca8-4dff-a905-202ae9f3216a"/>
+      <field name="inherit_id" ref="__export__.ir_ui_view_3663_9f36f54a"/>
       <field name="arch" type="xml">
         <xpath expr="//button[@name='%(estafeta_delivery.action_estafeta_wizard)d']" position="attributes">
           <attribute name="attrs">{'invisible': [('x_carrier_id', '!=', 2166)]}</attribute>

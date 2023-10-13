@@ -29,6 +29,7 @@ class estafeta_delivery(models.TransientModel):
                         self.address_post_code = self.address.split("|")[5].strip()
                         self.address_country = self.address.split("|")[6].strip()                       
                         self.address_telephone = self.address.split("|")[7].strip()
+                        self.address_externalNum = self.address.split("|")[8].strip()
             except Exception as e:
                 print(f'unerror:{e}')
     
@@ -64,6 +65,8 @@ class estafeta_delivery(models.TransientModel):
     address_post_code = fields.Char(string="Post Code", readonly="1")
     address_country = fields.Char(string="Country", readonly="1")
     address_telephone = fields.Char(string="Telephone", readonly="1")
+    address_externalNum = fields.Char(string="External Number", readonly="1")
+
     
 
     def _tracking_estafeta(self):
@@ -170,7 +173,7 @@ class estafeta_delivery(models.TransientModel):
                                     "zipCode": self.address_post_code,
                                     "countryCode": "484",
                                     "countryName": "MEX",
-                                    "externalNum": "5201"
+                                    "externalNum": self.address_externalNum
                                 }
                             }
                         }
@@ -208,6 +211,10 @@ class estafeta_delivery(models.TransientModel):
             'res_model': 'account.move',  # Nombre del modelo actual
             'res_id': self.invoice_id.id,  # ID del registro actual
         }
+        
+
+        attachment_weybill = self.env['ir.attachment'].create(attachment_data)
+
 
         invoice = self.env['account.move'].browse(self.invoice_id.id)
         if invoice:
