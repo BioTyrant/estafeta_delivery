@@ -3,6 +3,7 @@
 from odoo import models, fields, api
 import requests
 import json
+from odoo.exceptions import UserError
 
 class estafeta_delivery(models.TransientModel):
     _name = 'estafeta_delivery.wizard'
@@ -30,6 +31,7 @@ class estafeta_delivery(models.TransientModel):
                         self.address_country = self.address.split("|")[6].strip()                       
                         self.address_telephone = self.address.split("|")[7].strip()
                         self.address_externalNum = self.address.split("|")[8].strip()
+
             except Exception as e:
                 print(f'unerror:{e}')
     
@@ -56,6 +58,7 @@ class estafeta_delivery(models.TransientModel):
     invoice_id = fields.Many2one('account.move', string="Invoice", readonly="1", default = _default_session)
     shipping_type = fields.Char (string="Shipping type", related= "invoice_id.x_studio_tipo_de_envo")
     sale_order_id = fields.Many2one('sale.order', string="Sale Order", related= "invoice_id.x_sale_order" )
+    quantity_labels = fields.Integer(string='Quantity of Labels', default=1, required=True)
     address = fields.Text(string="Address", related= "sale_order_id.x_studio_notas_para_cedis_1")
     address_name = fields.Char(string="Name",  compute=_address_name)
     address_last_name = fields.Char(string="Last Name", readonly="1")
@@ -66,6 +69,7 @@ class estafeta_delivery(models.TransientModel):
     address_country = fields.Char(string="Country", readonly="1")
     address_telephone = fields.Char(string="Telephone", readonly="1")
     address_externalNum = fields.Char(string="External Number", readonly="1")
+
 
     
 
@@ -113,7 +117,7 @@ class estafeta_delivery(models.TransientModel):
                         "width": 10
                     },
                     "serviceConfiguration": {
-                        "quantityOfLabels": 5,
+                        "quantityOfLabels": self.quantity_labels,
                         "serviceTypeId": "70",
                         "salesOrganization": "502",
                         "originZipCodeForRouting": "06170",
@@ -201,26 +205,31 @@ class estafeta_delivery(models.TransientModel):
     
     def update_invoice(self):
         
-        traking = self._tracking_estafeta()
-        
-        data = traking['data']
-        weybill = traking['labelPetitionResult']['elements'][0]['wayBill']
-        attachment_data = {
-            'name': weybill,
-            'datas': data,
-            'res_model': 'account.move',  # Nombre del modelo actual
-            'res_id': self.invoice_id.id,  # ID del registro actual
-        }
-        
+        if self.quantity_labels > 0 and self.quantity_labels < 11:
+            traking = self._tracking_estafeta()
+            
+            data = traking['data']
+            weybill = traking['labelPetitionResult']['elements'][0]['wayBill']
+            attachment_data = {
+                'name': weybill,
+                'datas': data,
+                'res_model': 'account.move',  # Nombre del modelo actual
+                'res_id': self.invoice_id.id,  # ID del registro actual
+            }
+            
+            try:
+                attachment_weybill = self.env['ir.attachment'].create(attachment_data)
 
-        attachment_weybill = self.env['ir.attachment'].create(attachment_data)
+            except Exception as e:
+                print(f'unerror:{e}')
 
-
-        invoice = self.env['account.move'].browse(self.invoice_id.id)
-        if invoice:
-            invoice.write({
-                'x_carrier_guide':weybill
-            })
+            invoice = self.env['account.move'].browse(self.invoice_id.id)
+            if invoice:
+                invoice.write({
+                    'x_carrier_guide':weybill
+                })
+        else:
+            raise UserError('The minimum quantity of Labels is 1 and the maximum is 10')
 
 
         

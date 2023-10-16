@@ -23,6 +23,7 @@
               <field name="invoice_id"/>
               <field name="shipping_type"/>
               <field name="sale_order_id"/>
+              <field name="quantity_labels"/>
             </group>
           </group>
           <footer>
