@@ -157,8 +157,8 @@ class estafeta_delivery(models.TransientModel):
                             "deliveryPUDOCode": "567",
                             "homeAddress": {
                                 "contact": {
-                                    "corporateName": self.address_name + " " + self.address_last_name[:29],
-                                    "contactName": self.address_name + " " + self.address_last_name[:29],
+                                    "corporateName": (self.address_name + " " + self.address_last_name)[:29],
+                                    "contactName": (self.address_name + " " + self.address_last_name)[:29],
                                     "telephone": self.address_telephone,
                                     # "email": "manfredjuarez100@gmail.com"
                                 },
@@ -197,6 +197,8 @@ class estafeta_delivery(models.TransientModel):
                 print("Respuesta del servidor:", response.text)
             else:
                 print("Respuesta del servidor:", response.text)
+                raise UserError(response.text)
+                
 
 
             response_json = response.json()
